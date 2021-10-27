@@ -9,6 +9,7 @@
 /*                                               */
 /*************************************************/
 
+/*
 int factorial(int n)
 {
     if (n == 0)
@@ -16,14 +17,30 @@ int factorial(int n)
     else
         return n * factorial(n - 1);
 }
+*/
+
+//Après des tests, on trouve que la version récursive terminale est mieux
+
+int fact_bis(int n, int acc)
+{
+    if (n == 0)
+        return acc;
+    else
+        return fact_bis(n - 1, acc * n);
+}
+
+int fact_term(int n)
+{
+    return fact_bis(n, 1);
+}
 
 double exp(double epsilon)
 {
     double e = 1;
     int incr = 1;
-    while ((1. / factorial(incr + 1)) > epsilon)
+    while ((1. / fact_term(incr + 1)) > epsilon)
     {
-        e += 1. / factorial(incr);
+        e += 1. / fact_term(incr);
         incr++;
     }
     return e;
@@ -69,6 +86,27 @@ double Puissance_db(double x, int n)
         }
     }
     return res;
+}
+
+double puisBis(double x, int n, int acc)
+{
+    if (n == 0)
+        return acc;
+    else
+        return puisBis(x, n - 1, x * acc);
+}
+
+double puisTerm(double x, int n)
+{
+    if (x = 0.)
+        return 0.;
+    else
+    {
+        if (n < 0)
+            return 1 / puisBis(x, -n, 1);
+        else
+            return puisBis(x, n, 1);
+    }
 }
 
 double DL(double epsilon)
