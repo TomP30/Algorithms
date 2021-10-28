@@ -50,8 +50,13 @@ float puissance_float_rec(float x, int n)
         if (x == 0)
             return 0.;
         else
-            return x * puissance_float_rec(x, n - 1);
+            return puissance_float_rec(x, n);
     }
+}
+float puissance_float_rec_bis(x, n)
+{
+    if (n==0) return 1;
+    else return x * puissance_float_rec_bis(x, n - 1);
 }
 
 double puissance_double_it(double x, int n)
@@ -92,17 +97,19 @@ double puisBis(double x, int n, int acc)
 
 double puisTerm(double x, int n)
 {
-    if (x = 0.)
-        return 0.;
-    else
+    if (n<0) return 1/puisBis(x, -n, 1);
+    else if (n == 0) return 1;
+    else 
     {
-        if (n < 0)
-            return 1 / puisBis(x, -n, 1);
-        else
-            return puisBis(x, n, 1);
+        if (x == 0) return 0;
+        else return puisBis( x, n,1);
     }
 }
 
+double puis2(double x, int n)
+{
+
+}
 double DL(double epsilon)
 {
     return expo(10) * (1 - (1. / 2) * epsilon 
@@ -179,21 +186,21 @@ int main(int argc, char **argv)
 {
     printf("e à 10^-6 près : %f\n\n", expo(10));
 
-    printf("(1.1)^10 = %f (double) \n", puissance_double_it(1.1, 10));
-    printf("(1.1)^10 = %f (float) \n", puissance_float_rec(1.1, 10));
-    printf("(1.1)^10 = %f (développement limité) \n\n", DL(0.1));
+    printf("(1.1)^10 = %.10f (double) \n", puissance_double_it(1.1, 10));
+    printf("(1.1)^10 = %.10f (float) \n", puissance_float_rec(1.1, 10));
+    printf("(1.1)^10 = %.10f (développement limité) \n\n", DL(0.1));
 
-    printf("(1.01)^100 = %f (double) \n", puissance_double_it(1.01, 100));
-    printf("(1.01)^100 = %f (float) \n", puissance_float_rec(1.01, 100));
-    printf("(1.01)^100 = %f (développement limité) \n\n", DL(0.01));
+    printf("(1.01)^100 = %.10f (double) \n", puissance_double_it(1.01, 100));
+    printf("(1.01)^100 = %.10f (float) \n", puissance_float_rec(1.01, 100));
+    printf("(1.01)^100 = %.10f (développement limité) \n\n", DL(0.01));
 
-    printf("(1.001)^1000 = %f (double) \n", puissance_double_it(1.001, 1000));
-    printf("(1.001)^1000 = %f (float) \n", puissance_float_rec(1.001, 1000));
-    printf("(1.001)^1000 = %f (développement limité) \n\n", DL(0.001));
+    printf("(1.001)^1000 = %.10f (double) \n", puissance_double_it(1.001, 1000));
+    printf("(1.001)^1000 = %.10f (float) \n", puissance_float_rec(1.001, 1000));
+    printf("(1.001)^1000 = %.10f (développement limité) \n\n", DL(0.001));
 
-    printf("(1.00001)^100000 = %f (double) \n", puissance_double_it(1.00001, 100000));
-    printf("(1.00001)^100000 = %f (float) \n", puissance_float_rec(1.00001, 100000));
-    printf("(1.00001)^100000 = %f (développement limité) \n\n", DL(0.00001));
+    printf("(1.00001)^100000 = %.10f (double) \n", puissance_double_it(1.00001, 100000));
+    printf("(1.00001)^100000 = %.10f (float) \n", puissance_float_rec(1.00001, 100000));
+    printf("(1.00001)^100000 = %.10f (développement limité) \n\n", DL(0.00001));
 
     for (int k = 0; k <= 4; k++) {
         printf("%d\n", ack_it_rec(k));
