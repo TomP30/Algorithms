@@ -116,6 +116,15 @@ double puissance_rec(double x, int n)
     }
 }
 
+double puissance_parite(double x, int n) {
+    if (n == 0) return 1;
+    else {
+        double p = puissance_parite(x,n/2);
+        if (n % 2 == 0) return p*p;
+        else return p*p*x;
+    }
+}
+
 double puisBis(double x, int n, int acc)
 {
     if (n == 0)
@@ -216,21 +225,25 @@ int main(int argc, char **argv)
 
     printf("(1.1)^10 taux d'erreur = %.10f (itératif) \n", e - puissance_double_it(1.1, 10));
     printf("(1.1)^10  taux d'erreur = %.10f (récursif) \n", e - puissance_rec(1.1, 10));
+    printf("(1.1)^10  taux d'erreur = %.10f (parité) \n", e - puissance_parite(1.1, 10));
     printf("(1.1)^10  taux d'erreur = %.10f (réc terminal) \n", e - puisTerm(1.1, 10));
     printf("(1.1)^10  taux d'erreur = %.10f (développement limité) \n\n", e - DL(0.1));
 
     printf("(1.01)^100  taux d'erreur = %.10f (itératif) \n", e - puissance_double_it(1.01, 100));
     printf("(1.01)^100  taux d'erreur = %.10f (récursif) \n", e - puissance_rec(1.01, 100));
+    printf("(1.01)^100  taux d'erreur = %.10f (parité) \n", e - puissance_parite(1.01, 100));
     printf("(1.01)^100  taux d'erreur = %.10f (réc terminal) \n", e - puisTerm(1.01, 100));
     printf("(1.01)^100  taux d'erreur = %.10f (développement limité) \n\n", e - DL(0.01));
 
     printf("(1.001)^1000  taux d'erreur = %.10f (itératif) \n", e - puissance_double_it(1.001, 1000));
     printf("(1.001)^1000  taux d'erreur = %.10f (récursif) \n", e - puissance_rec(1.001, 1000));
+    printf("(1.001)^1000  taux d'erreur = %.10f (parité) \n", e - puissance_parite(1.001, 1000));
     printf("(1.001)^1000  taux d'erreur = %.10f (réc terminal) \n", e - puisTerm(1.001, 1000));
     printf("(1.001)^1000  taux d'erreur = %.10f (développement limité) \n\n", e - DL(0.001));
 
     printf("(1.00001)^100000  taux d'erreur = %.10f (itératif) \n", e - puissance_double_it(1.00001, 100000));
     printf("(1.00001)^100000  taux d'erreur = %.10f (récursif) \n", - e + puissance_rec(1.00001, 100000));
+    printf("(1.00001)^100000  taux d'erreur = %.10f (parité) \n", - e + puissance_parite(1.00001, 100000));
     printf("(1.00001)^100000  taux d'erreur = %.10f (réc terminal) \n", - e + puisTerm(1.00001, 100000));
     printf("(1.00001)^100000  taux d'erreur = %.10f (développement limité) \n\n", e - DL(0.00001));
 
