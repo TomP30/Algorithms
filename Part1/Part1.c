@@ -39,24 +39,25 @@ double expo(int N)
     return e;
 }
 
+float puissance_float_rec_bis(float x, int n)
+{
+    if (n==0) return 1.;
+    else return x * puissance_float_rec_bis(x, n - 1);
+}
+
 float puissance_float_rec(float x, int n)
 {
     if (n < 0)
-        return 1. / puissance_float_rec(x, -n);
+        return 1. / puissance_float_rec_bis(x, -n);
     else if (n == 0)
         return 1.;
     else
     {
-        if (x == 0)
+        if (x == 0.)
             return 0.;
         else
-            return puissance_float_rec(x, n);
+            return puissance_float_rec_bis(x, n);
     }
-}
-float puissance_float_rec_bis(x, n)
-{
-    if (n==0) return 1;
-    else return x * puissance_float_rec_bis(x, n - 1);
 }
 
 double puissance_double_it(double x, int n)
@@ -104,11 +105,6 @@ double puisTerm(double x, int n)
         if (x == 0) return 0;
         else return puisBis( x, n,1);
     }
-}
-
-double puis2(double x, int n)
-{
-
 }
 double DL(double epsilon)
 {
@@ -184,23 +180,24 @@ double X_ite(int n)
 
 int main(int argc, char **argv)
 {
-    printf("e à 10^-6 près : %f\n\n", expo(10));
+    double e = expo(30);
+    printf("e à 10^-10 près : %.10f\n\n", e);
 
-    printf("(1.1)^10 = %.10f (double) \n", puissance_double_it(1.1, 10));
-    printf("(1.1)^10 = %.10f (float) \n", puissance_float_rec(1.1, 10));
-    printf("(1.1)^10 = %.10f (développement limité) \n\n", DL(0.1));
+    printf("(1.1)^10 taux d'erreur = %.10f (double) \n", e - puissance_double_it(1.1, 10));
+    printf("(1.1)^10  taux d'erreur = %.10f (float) \n", e - puissance_float_rec(1.1, 10));
+    printf("(1.1)^10  taux d'erreur = %.10f (développement limité) \n\n", e - DL(0.1));
 
-    printf("(1.01)^100 = %.10f (double) \n", puissance_double_it(1.01, 100));
-    printf("(1.01)^100 = %.10f (float) \n", puissance_float_rec(1.01, 100));
-    printf("(1.01)^100 = %.10f (développement limité) \n\n", DL(0.01));
+    printf("(1.01)^100  taux d'erreur = %.10f (double) \n", e - puissance_double_it(1.01, 100));
+    printf("(1.01)^100  taux d'erreur = %.10f (float) \n", e - puissance_float_rec(1.01, 100));
+    printf("(1.01)^100  taux d'erreur = %.10f (développement limité) \n\n", e - DL(0.01));
 
-    printf("(1.001)^1000 = %.10f (double) \n", puissance_double_it(1.001, 1000));
-    printf("(1.001)^1000 = %.10f (float) \n", puissance_float_rec(1.001, 1000));
-    printf("(1.001)^1000 = %.10f (développement limité) \n\n", DL(0.001));
+    printf("(1.001)^1000  taux d'erreur = %.10f (double) \n", e - puissance_double_it(1.001, 1000));
+    printf("(1.001)^1000  taux d'erreur = %.10f (float) \n", e - puissance_float_rec(1.001, 1000));
+    printf("(1.001)^1000  taux d'erreur = %.10f (développement limité) \n\n", e - DL(0.001));
 
-    printf("(1.00001)^100000 = %.10f (double) \n", puissance_double_it(1.00001, 100000));
-    printf("(1.00001)^100000 = %.10f (float) \n", puissance_float_rec(1.00001, 100000));
-    printf("(1.00001)^100000 = %.10f (développement limité) \n\n", DL(0.00001));
+    printf("(1.00001)^100000  taux d'erreur = %.10f (double) \n", e - puissance_double_it(1.00001, 100000));
+    printf("(1.00001)^100000  taux d'erreur = %.10f (float) \n", - e + puissance_float_rec(1.00001, 100000));
+    printf("(1.00001)^100000  taux d'erreur = %.10f (développement limité) \n\n", e - DL(0.00001));
 
     for (int k = 0; k <= 4; k++) {
         printf("%d\n", ack_it_rec(k));
