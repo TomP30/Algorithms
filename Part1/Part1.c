@@ -9,18 +9,8 @@
 /*                                               */
 /*************************************************/
 
+
 /*
-int factorial(int n)
-{
-    if (n == 0)
-        return 1;
-    else
-        return n * factorial(n - 1);
-}
-*/
-
-//Après des tests, on trouve que la version récursive terminale est mieux
-
 int fact_bis(int n, int acc)
 {
     if (n == 0)
@@ -33,23 +23,26 @@ int fact_term(int n)
 {
     return fact_bis(n, 1);
 }
+*/
 
-double exp(double epsilon)
+double expo(int N)
 {
     double e = 1;
     int incr = 1;
-    while ((1. / fact_term(incr + 1)) > epsilon)
+    int fact = 1;
+    while (incr < N)
     {
-        e += 1. / fact_term(incr);
+        e += 1. / fact;
         incr++;
+        fact *= incr;
     }
     return e;
 }
 
-float Puissance_fl(float x, int n)
+float puissance_float_rec(float x, int n)
 {
     if (n < 0)
-        return 1. / Puissance_fl(x, -n);
+        return 1. / puissance_float_rec(x, -n);
     else if (n == 0)
         return 1.;
     else
@@ -57,10 +50,11 @@ float Puissance_fl(float x, int n)
         if (x == 0)
             return 0.;
         else
-            return x * Puissance_fl(x, n - 1);
+            return x * puissance_float_rec(x, n - 1);
     }
 }
-double Puissance_db(double x, int n)
+
+double puissance_double_it(double x, int n)
 {
     int k;
     double res = 1.;
@@ -111,10 +105,14 @@ double puisTerm(double x, int n)
 
 double DL(double epsilon)
 {
-    return exp(0.000001) * (1 - (1. / 2) * epsilon + (11 / 24) * epsilon * epsilon - (7 / 16) * epsilon * epsilon * epsilon + (2447 / 5760) * epsilon * epsilon * epsilon * epsilon - (959 / 2304) * epsilon * epsilon * epsilon * epsilon * epsilon);
+    return expo(10) * (1 - (1. / 2) * epsilon 
+    + (11 / 24) * epsilon * epsilon 
+    - (7 / 16) * epsilon * epsilon * epsilon 
+    + (2447 / 5760) * epsilon * epsilon * epsilon * epsilon 
+    - (959 / 2304) * epsilon * epsilon * epsilon * epsilon * epsilon);
 }
 
-int Ack_ite(int m, int n)
+int ack_it_rec_bis(int m, int n)
 {
     if (m == 0)
         return n + 1;
@@ -123,20 +121,30 @@ int Ack_ite(int m, int n)
         int r = 1;
         for (int i = 1; i <= n + 1; i++)
         {
-            r = Ack_ite(m - 1, r);
+            r = ack_it_rec_bis(m - 1, r);
         }
         return r;
     }
 }
 
-int Ack_rec(int m, int n)
+int ack_it_rec(int m) {
+    return ack_it_rec_bis(m,0);
+}
+
+int ack_rec_bis(int m, int n)
 {
     if (m == 0)
         return n + 1;
-    else if (n == 0)
-        return Ack_rec(m - 1, 1);
-    else
-        return Ack_rec(m - 1, Ack_rec(m, n - 1));
+    else {
+        if (n == 0)
+            return ack_rec_bis(m - 1, 1);
+        else
+            return ack_rec_bis(m - 1, ack_rec_bis(m, n - 1));
+    }
+}
+
+int ack_rec(int m) {
+    return ack_rec_bis(m,0);
 }
 
 double X_rec(int n)
@@ -145,7 +153,7 @@ double X_rec(int n)
         return 1;
     else
     {
-        float x = X_rec(n - 1);
+        double x = X_rec(n - 1);
         return x + 1. / x;
     }
 }
@@ -169,27 +177,28 @@ double X_ite(int n)
 
 int main(int argc, char **argv)
 {
-    assert(factorial(4) == 24);
-    assert(factorial(0) == factorial(1));
+    printf("e à 10^-6 près : %f\n\n", expo(10));
 
-    double e = exp(0.000001);
-    printf("exp(1) à 10^-6 pres : %f\n\n", e);
-
-    printf("(1.1)^10 = %f (double) \n", Puissance_db(1.1, 10));
-    printf("(1.1)^10 = %f (float) \n", Puissance_fl(1.1, 10));
+    printf("(1.1)^10 = %f (double) \n", puissance_double_it(1.1, 10));
+    printf("(1.1)^10 = %f (float) \n", puissance_float_rec(1.1, 10));
     printf("(1.1)^10 = %f (développement limité) \n\n", DL(0.1));
 
-    printf("(1.01)^100 = %f (double) \n", Puissance_db(1.01, 100));
-    printf("(1.01)^100 = %f (float) \n", Puissance_fl(1.01, 100));
+    printf("(1.01)^100 = %f (double) \n", puissance_double_it(1.01, 100));
+    printf("(1.01)^100 = %f (float) \n", puissance_float_rec(1.01, 100));
     printf("(1.01)^100 = %f (développement limité) \n\n", DL(0.01));
 
-    printf("(1.001)^1000 = %f (double) \n", Puissance_db(1.001, 1000));
-    printf("(1.001)^1000 = %f (float) \n", Puissance_fl(1.001, 1000));
+    printf("(1.001)^1000 = %f (double) \n", puissance_double_it(1.001, 1000));
+    printf("(1.001)^1000 = %f (float) \n", puissance_float_rec(1.001, 1000));
     printf("(1.001)^1000 = %f (développement limité) \n\n", DL(0.001));
 
-    printf("(1.00001)^100000 = %f (double) \n", Puissance_db(1.00001, 100000));
-    printf("(1.00001)^100000 = %f (float) \n", Puissance_fl(1.00001, 100000));
+    printf("(1.00001)^100000 = %f (double) \n", puissance_double_it(1.00001, 100000));
+    printf("(1.00001)^100000 = %f (float) \n", puissance_float_rec(1.00001, 100000));
     printf("(1.00001)^100000 = %f (développement limité) \n\n", DL(0.00001));
+
+    for (int k = 0; k <= 4; k++) {
+        printf("%d\n", ack_it_rec(k));
+        printf("%d\n", ack_rec(k));
+    }
 
     printf("X100 = %f (récursif); X100 = %f (itératif) \n", X_rec(100), X_ite(100));
 }
