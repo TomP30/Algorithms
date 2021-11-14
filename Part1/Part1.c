@@ -58,8 +58,6 @@ double puissance_double_it(double x, int n)
         }
         return 1 / res;
     }
-    else if (n == 0)
-        return 1.;
     else
     {
         k = n;
@@ -86,8 +84,6 @@ float puissance_float_it(float x, int n)
         }
         return 1 / res;
     }
-    else if (n == 0)
-        return 1.;
     else
     {
         k = n;

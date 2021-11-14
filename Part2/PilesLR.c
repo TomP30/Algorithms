@@ -255,7 +255,6 @@ int Compte0Initiaux_rec(Liste l)
 
 int Compte0Initiaux_iter(Liste l)
 {
-    if (estVide(l)) return 0;
     Liste copy = l;
     int cpt = 0;
     while (NOT(estVide(copy)) && (copy->nombre == 0))
@@ -357,6 +356,31 @@ void ElimineKDerniersX(Liste *l, int k, int x)
     Bis_EKDX(l,&k,x);
 }
 
+
+// File
+
+
+typedef struct File 
+{
+    struct Bloc** entree;
+}File;
+
+void initFileVide(File* f)
+{
+    f->entree = NULL;
+}
+
+void ajouteFile(int x, File f)
+{
+    Bloc* tmp = (Bloc*) malloc(sizeof(Bloc)) ;
+    tmp->nombre = x ;
+    tmp->suivant = f.entree ;
+    return tmp ;
+}
+void enfile(int x, File *f)
+{
+
+}
 /*************************************************/
 /*                                               */
 /*           Main                                */
@@ -492,6 +516,10 @@ int main(int argc, char** argv)
     VideListe(&m1);
     VideListe(&m2);
     VideListe(&m3);
+
+    File f;
+
+    initFileVide (&f);
 
     return 0;
 }
