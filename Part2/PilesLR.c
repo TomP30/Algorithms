@@ -370,16 +370,42 @@ void initFileVide(File* f)
     f->entree = NULL;
 }
 
-void ajouteFile(int x, File f)
+void ajouteFile(int x, File *f)
 {
     Bloc* tmp = (Bloc*) malloc(sizeof(Bloc)) ;
-    tmp->nombre = x ;
-    tmp->suivant = f.entree ;
-    return tmp ;
+    tmp->nombre = x;
+    if (f->entree == NULL)
+    {
+        tmp->suivant = tmp ;
+        f->entree = &tmp->suivant;
+        *(f->entree) = tmp;
+    }else
+    {
+        tmp->suivant = *(f->entree) ;
+        *(f->entree) = tmp;
+        f->entree = &tmp->suivant;
+    }
+    
+    
 }
-void enfile(int x, File *f)
-{
 
+void sortir(int x, File f)
+{
+    
+}
+
+void printFile (File f)
+{
+    Liste L2 = *(f.entree);
+    Liste L1 = L2;
+    printf("%d ", premier(L2));
+    L2 = suite(L2);
+    while(L2 != L1)
+    {
+        printf("%d ", premier(L2));
+        L2 = suite(L2);
+    }
+    printf("\n");
 }
 /*************************************************/
 /*                                               */
@@ -520,6 +546,12 @@ int main(int argc, char** argv)
     File f;
 
     initFileVide (&f);
+    ajouteFile(1,&f);
+    ajouteFile(2,&f);
+    ajouteFile(3,&f);
+    ajouteFile(4,&f);
+    ajouteFile(5,&f);
+    printFile(f);
 
     return 0;
 }
