@@ -96,16 +96,11 @@ float puissance_float_it(float x, int n)
     return res;
 }
 
-double puissance_rec_bis(double x, int n)
-{
-    if (n==0) return 1.;
-    else return x * puissance_rec_bis(x, n - 1);
-}
 
 double puissance_rec(double x, int n)
 {
     if (n < 0)
-        return 1. / puissance_rec_bis(x, -n);
+        return 1. / (x * puissance_rec(x, n - 1));
     else if (n == 0)
         return 1.;
     else
@@ -113,7 +108,7 @@ double puissance_rec(double x, int n)
         if (x == 0.)
             return 0.;
         else
-            return puissance_rec_bis(x, n);
+            return x * puissance_rec(x, n - 1);;
     }
 }
 
@@ -124,6 +119,21 @@ double puissance_parite(double x, int n) {
         if (n % 2 == 0) return p*p;
         else return p*p*x;
     }
+}
+
+double puissance_parite_ite(double x, int n) {
+    double y = x;
+    double res = 1;
+    while (n != 0)
+    {
+        if (n%2 == 1)
+        {
+            res = res*y;
+        }
+        n /= 2;
+        y = y*y;
+    }
+    return res;
 }
 
 double puisBis(double x, int n, int acc)
@@ -228,48 +238,56 @@ int main(int argc, char **argv)
 
     //Les temps de calcul des affichages suivants sont dans une valeur arbitraire, permettant une comparaison
     clock_t t1 = clock();
-    printf("(1.1)^10  taux d'erreur = %.10e (itératif),             temps de calcul : %.10f \n", abso(e - puissance_double_it(1.1, 10)),abso(clock()-t1)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.1)^10  taux d'erreur = %.10e (itératif),             temps de calcul : %.10e \n", abso(e - puissance_double_it(1.1, 10)),abso(clock()-t1)* 1000 / CLOCKS_PER_SEC);
     clock_t t2 = clock();
-    printf("(1.1)^10  taux d'erreur = %.10e (récursif),             temps de calcul : %.10f \n", abso(e - puissance_rec(1.1, 10)),abso(clock()-t2)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.1)^10  taux d'erreur = %.10e (récursif),             temps de calcul : %.10e \n", abso(e - puissance_rec(1.1, 10)),abso(clock()-t2)* 1000 / CLOCKS_PER_SEC);
     clock_t t3 = clock();
-    printf("(1.1)^10  taux d'erreur = %.10e (parité),               temps de calcul : %.10f \n", abso(e - puissance_parite(1.1, 10)),abso(clock()-t3)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.1)^10  taux d'erreur = %.10e (parité),               temps de calcul : %.10e \n", abso(e - puissance_parite(1.1, 10)),abso(clock()-t3)* 1000 / CLOCKS_PER_SEC);
+    clock_t t6 = clock();
+    printf("(1.1)^10  taux d'erreur = %.10e (parité itératif),      temps de calcul : %.10e \n", abso(e - puissance_parite_ite(1.1, 10)),abso(clock()-t6)* 1000 / CLOCKS_PER_SEC);
     clock_t t4 = clock();
-    printf("(1.1)^10  taux d'erreur = %.10e (réc terminal),         temps de calcul : %.10f \n", abso(e - puisTerm(1.1, 10)),abso(clock()-t4)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.1)^10  taux d'erreur = %.10e (réc terminal),         temps de calcul : %.10e \n", abso(e - puisTerm(1.1, 10)),abso(clock()-t4)* 1000 / CLOCKS_PER_SEC);
     clock_t t5 = clock();
-    printf("(1.1)^10  taux d'erreur = %.10e (développement limité), temps de calcul : %.10f \n\n", abso(e - DL(0.1)),abso(clock()-t5)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.1)^10  taux d'erreur = %.10e (développement limité), temps de calcul : %.10e \n\n", abso(e - DL(0.1)),abso(clock()-t5)* 1000 / CLOCKS_PER_SEC);
 
     t1 = clock();
-    printf("(1.01)^100  taux d'erreur = %.10e (itératif),             temps de calcul : %.10f \n", abso(e - puissance_double_it(1.01, 100)),abso(clock()-t1)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.01)^100  taux d'erreur = %.10e (itératif),             temps de calcul : %.10e \n", abso(e - puissance_double_it(1.01, 100)),abso(clock()-t1)* 1000 / CLOCKS_PER_SEC);
     t2 = clock();
-    printf("(1.01)^100  taux d'erreur = %.10e (récursif),             temps de calcul : %.10f \n", abso(e - puissance_rec(1.01, 100)),abso(clock()-t2)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.01)^100  taux d'erreur = %.10e (récursif),             temps de calcul : %.10e \n", abso(e - puissance_rec(1.01, 100)),abso(clock()-t2)* 1000 / CLOCKS_PER_SEC);
     t3 = clock();
-    printf("(1.01)^100  taux d'erreur = %.10e (parité),               temps de calcul : %.10f \n", abso(e - puissance_parite(1.01, 100)),abso(clock()-t3)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.01)^100  taux d'erreur = %.10e (parité),               temps de calcul : %.10e \n", abso(e - puissance_parite(1.01, 100)),abso(clock()-t3)* 1000 / CLOCKS_PER_SEC);
+    t6 = clock();
+    printf("(1.01)^100  taux d'erreur = %.10e (parité itératif),      temps de calcul : %.10e \n", abso(e - puissance_parite_ite(1.01, 100)),abso(clock()-t6)* 1000 / CLOCKS_PER_SEC);
     t4 = clock();
-    printf("(1.01)^100  taux d'erreur = %.10e (réc terminal),         temps de calcul : %.10f \n", abso(e - puisTerm(1.01, 100)),abso(clock()-t4)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.01)^100  taux d'erreur = %.10e (réc terminal),         temps de calcul : %.10e \n", abso(e - puisTerm(1.01, 100)),abso(clock()-t4)* 1000 / CLOCKS_PER_SEC);
     t5 = clock();
-    printf("(1.01)^100  taux d'erreur = %.10e (développement limité), temps de calcul : %.10f \n\n", abso(e - DL(0.01)),abso(clock()-t5)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.01)^100  taux d'erreur = %.10e (développement limité), temps de calcul : %.10e \n\n", abso(e - DL(0.01)),abso(clock()-t5)* 1000 / CLOCKS_PER_SEC);
 
     t1 = clock();
-    printf("(1.001)^1000  taux d'erreur = %.10e (itératif),             temps de calcul : %.10f \n", abso(e - puissance_double_it(1.001, 1000)),abso(clock()-t1)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.001)^1000  taux d'erreur = %.10e (itératif),             temps de calcul : %.10e \n", abso(e - puissance_double_it(1.001, 1000)),abso(clock()-t1)* 1000 / CLOCKS_PER_SEC);
     t2 = clock();
-    printf("(1.001)^1000  taux d'erreur = %.10e (récursif),             temps de calcul : %.10f \n", abso(e - puissance_rec(1.001, 1000)),abso(clock()-t2)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.001)^1000  taux d'erreur = %.10e (récursif),             temps de calcul : %.10e \n", abso(e - puissance_rec(1.001, 1000)),abso(clock()-t2)* 1000 / CLOCKS_PER_SEC);
     t3 = clock();
-    printf("(1.001)^1000  taux d'erreur = %.10e (parité),               temps de calcul : %.10f \n", abso(e - puissance_parite(1.001, 1000)),abso(clock()-t3)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.001)^1000  taux d'erreur = %.10e (parité),               temps de calcul : %.10e \n", abso(e - puissance_parite(1.001, 1000)),abso(clock()-t3)* 1000 / CLOCKS_PER_SEC);
+    t6 = clock();
+    printf("(1.001)^1000  taux d'erreur = %.10e (parité itératif),      temps de calcul : %.10e \n", abso(e - puissance_parite_ite(1.001, 1000)),abso(clock()-t6)* 1000 / CLOCKS_PER_SEC);
     t4 = clock();
-    printf("(1.001)^1000  taux d'erreur = %.10e (réc terminal),         temps de calcul : %.10f \n", abso(e - puisTerm(1.001, 1000)),abso(clock()-t4)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.001)^1000  taux d'erreur = %.10e (réc terminal),         temps de calcul : %.10e \n", abso(e - puisTerm(1.001, 1000)),abso(clock()-t4)* 1000 / CLOCKS_PER_SEC);
     t5 = clock();
-    printf("(1.001)^1000  taux d'erreur = %.10e (développement limité), temps de calcul : %.10f \n\n", abso(e - DL(0.001)),abso(clock()-t5)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.001)^1000  taux d'erreur = %.10e (développement limité), temps de calcul : %.10e \n\n", abso(e - DL(0.001)),abso(clock()-t5)* 1000 / CLOCKS_PER_SEC);
 
     t1 = clock();
-    printf("(1.00001)^10000  taux d'erreur = %.10e (itératif),             temps de calcul : %.10f \n", abso(e - puissance_double_it(1.00001, 100000)),abso(clock()-t1)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.00001)^10000  taux d'erreur = %.10e (itératif),             temps de calcul : %.10e \n", abso(e - puissance_double_it(1.00001, 100000)),abso(clock()-t1)* 1000 / CLOCKS_PER_SEC);
     t2 = clock();
-    printf("(1.00001)^10000  taux d'erreur = %.10e (récursif),             temps de calcul : %.10f \n", abso(e - puissance_rec(1.00001, 100000)),abso(clock()-t2)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.00001)^10000  taux d'erreur = %.10e (récursif),             temps de calcul : %.10e \n", abso(e - puissance_rec(1.00001, 100000)),abso(clock()-t2)* 1000 / CLOCKS_PER_SEC);
     t3 = clock();
-    printf("(1.00001)^10000  taux d'erreur = %.10e (parité),               temps de calcul : %.10f \n", abso(e - puissance_parite(1.00001, 100000)),abso(clock()-t3)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.00001)^10000  taux d'erreur = %.10e (parité),               temps de calcul : %.10e \n", abso(e - puissance_parite(1.00001, 100000)),abso(clock()-t3)* 1000 / CLOCKS_PER_SEC);
+    t6 = clock();
+    printf("(1.00001)^10000  taux d'erreur = %.10e (parité itératif),      temps de calcul : %.10e \n", abso(e - puissance_parite_ite(1.00001, 100000)),abso(clock()-t6)* 1000 / CLOCKS_PER_SEC);
     t4 = clock();
-    printf("(1.00001)^10000  taux d'erreur = %.10e (réc terminal),         temps de calcul : %.10f \n", abso(e - puisTerm(1.00001, 100000)),abso(clock()-t4)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.00001)^10000  taux d'erreur = %.10e (réc terminal),         temps de calcul : %.10e \n", abso(e - puisTerm(1.00001, 100000)),abso(clock()-t4)* 1000 / CLOCKS_PER_SEC);
     t5 = clock();
-    printf("(1.00001)^10000  taux d'erreur = %.10e (développement limité), temps de calcul : %.10f \n\n", abso(e - DL(0.00001)),abso(clock()-t5)* 1000 / CLOCKS_PER_SEC);
+    printf("(1.00001)^10000  taux d'erreur = %.10e (développement limité), temps de calcul : %.10e \n\n", abso(e - DL(0.00001)),abso(clock()-t5)* 1000 / CLOCKS_PER_SEC);
 
     for (int k = 0; k <= 4; k++) {
         printf("%d ", ack_it_rec(k));
