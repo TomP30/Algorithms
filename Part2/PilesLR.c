@@ -360,43 +360,54 @@ void ElimineKDerniersX(Liste *l, int k, int x)
 // File
 
 
-typedef struct File 
-{
-    struct Bloc** entree;
-}File;
+typedef Liste* File;
 
 void initFileVide(File* f)
 {
-    f->entree = NULL;
+    *f = NULL;
 }
 
 void ajouteFile(int x, File *f)
 {
     Bloc* tmp = (Bloc*) malloc(sizeof(Bloc)) ;
     tmp->nombre = x;
-    if (f->entree == NULL)
+    if (f == NULL)
     {
         tmp->suivant = tmp ;
-        f->entree = &tmp->suivant;
-        *(f->entree) = tmp;
+        *f = &tmp->suivant;
+        **f = tmp;
     }else
     {
-        tmp->suivant = *(f->entree) ;
-        *(f->entree) = tmp;
-        f->entree = &tmp->suivant;
+        tmp->suivant = **f ;
+        **f = tmp;
+        *f = &tmp->suivant;
     }
     
     
 }
 
-void sortir(int x, File f)
+/*void sortir(int x, File* f)
 {
-    
-}
+    if (x == (**f)->nombre)
+    {
+        depile(**f);
+    }else
+    {
+        File save = *f;
+        save = (**f)->suivant;
+        while(*f != save)
+        {
+            if (x == (**save).nombre)
+            {
+                depile(*save);
+            }
+        }
+    }
+}*/
 
 void printFile (File f)
 {
-    Liste L2 = *(f.entree);
+    Liste L2 = *f;
     Liste L1 = L2;
     printf("%d ", premier(L2));
     L2 = suite(L2);
