@@ -1,3 +1,9 @@
+/*************************************************/
+/*                                               */
+/*              INIT                             */
+/*                                               */
+/*************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -16,6 +22,13 @@ typedef struct bloc_image
     struct bloc_image * fils[4] ;
 } bloc_image ;
 typedef bloc_image *image ;
+
+
+/*************************************************/
+/*                                               */
+/*           Briques de base                     */
+/*                                               */
+/*************************************************/
 
 image Construit_Blanc()
 {
@@ -44,6 +57,44 @@ image Construit_Composee(image ihg, image ihd, image ibg, image ibd)
     i->fils[3] = ibd;
 }
 
+image Copie(image i)
+{
+    image copy = NULL;
+    if (TestNoir(i)){
+        copy = Construit_Noir();
+    }
+    else if (NOT(TestBlanc(i))){
+        copy = Construit_Composee(Copie(i->fils[0]),Copie(i->fils[1]),Copie(i->fils[2]),Copie(i->fils[3]));
+    }
+    return copy;
+}
+
+void RendMemoire(image* i)
+{
+    if (TestNoir(*i))
+    {
+        free(*i);
+        *i = NULL;
+    }
+    else if (NOT(TestBlanc(*i)))
+    {
+        RendMemoire(&(*i)->fils[0]);
+        RendMemoire(&(*i)->fils[1]);
+        RendMemoire(&(*i)->fils[2]);
+        RendMemoire(&(*i)->fils[3]);
+        free(*i);
+        *i = NULL;
+    }
+}
+
+image Lecture();
+/*************************************************/
+/*                                               */
+/*                 Prédicats                     */
+/*                                               */
+/*************************************************/
+
+
 bool TestNoir(image i)
 {
     return i->toutnoir == 1 
@@ -56,24 +107,7 @@ bool TestBlanc(image i)
 {
     return i == NULL;
 }
-void Affiche_Normal_SansRL(image i)
-{
-    if (TestBlanc(i)) printf("B ");
-    else if (TestNoir(i)) printf("N ");
-    else
-    {
-        printf("+ ");
-        Affiche_Normal_SansRL(i->fils[0]);
-        Affiche_Normal_SansRL(i->fils[1]);
-        Affiche_Normal_SansRL(i->fils[2]);
-        Affiche_Normal_SansRL(i->fils[3]);
-    }
-}
-void Affiche_Normal(image i)
-{
-    Affiche_Normal_SansRL(i);
-    printf("\n");
-}
+
 
 bool EstNoir(image i)
 {
@@ -92,18 +126,63 @@ bool EstBlanc(image i)
         AND EstBlanc(i->fils[3]));
 }
 
+bool UnionNoire (image i1, image i2);
 
-image Copie(image i)
+/*************************************************/
+/*                                               */
+/*                 Affichage                     */
+/*                                               */
+/*************************************************/
+
+
+void Affiche_Normal_SansRL(image i)
 {
-    image copy = NULL;
-    if (TestNoir(i)){
-        copy = Construit_Noir();
+    if (TestBlanc(i)) printf("B ");
+    else if (TestNoir(i)) printf("N ");
+    else
+    {
+        printf("+ ");
+        Affiche_Normal_SansRL(i->fils[0]);
+        Affiche_Normal_SansRL(i->fils[1]);
+        Affiche_Normal_SansRL(i->fils[2]);
+        Affiche_Normal_SansRL(i->fils[3]);
     }
-    else if (NOT(TestBlanc(i))){
-        copy = Construit_Composee(Copie(i->fils[0]),Copie(i->fils[1]),Copie(i->fils[2]),Copie(i->fils[3]));
-    }
-    return copy;
 }
+
+
+void Affiche_Normal(image i)
+{
+    Affiche_Normal_SansRL(i);
+    printf("\n");
+}
+void Bis_Affiche_Prof(image i,int p)
+{
+    if (TestBlanc(i)) printf("B%d ",p);
+    else if (TestNoir(i)) printf("N%d ",p);
+    else
+    {
+        printf("+%d ",p);
+        Bis_Affiche_Prof(i->fils[0],p+1);
+        Bis_Affiche_Prof(i->fils[1],p+1);
+        Bis_Affiche_Prof(i->fils[2],p+1);
+        Bis_Affiche_Prof(i->fils[3],p+1);
+    }
+}
+
+void Affiche_Prof(image i)
+{
+    Bis_Affiche_Prof(i,0);
+    printf("\n");
+}
+
+
+/*************************************************/
+/*                                               */
+/*             Aire et Image grise               */
+/*                                               */
+/*************************************************/
+
+
 void BisAire(image i,int* Noir,int* Total)
 {
     if (TestBlanc(i)) (*Total)++;
@@ -127,20 +206,40 @@ double Aire(image i)
     return (Noir*1.0)/Total;
 }
 
-void RendMemoire(image* i)
+
+void BisGrise(image i,int* cpt)
 {
-    if (TestNoir(*i))
+    if (NOT(TestNoir(i) OR TestBlanc(i)))
     {
-        free(*i);
-        *i = NULL;
+        if (Aire(i)<=2./3 AND Aire(i)>=1./3) (*cpt)++;
+        BisGrise(i->fils[0],cpt);
+        BisGrise(i->fils[1],cpt);
+        BisGrise(i->fils[2],cpt);
+        BisGrise(i->fils[3],cpt);
     }
-    else if (NOT(TestBlanc(*i)))
-    {
-        RendMemoire(&(*i)->fils[0]);
-        RendMemoire(&(*i)->fils[1]);
-        RendMemoire(&(*i)->fils[2]);
-        RendMemoire(&(*i)->fils[3]);
-        free(*i);
-        *i = NULL;
+}
+
+int CompteSousImagesGrises(image i)
+{
+    int cpt = 0;
+    BisGrise(i,&cpt);
+    return cpt;
+}
+
+void Negatif(image *i)
+{
+    if (TestBlanc(*i)){
+        RendMemoire(i);
+        *i = Construit_Noir();
+    }
+    else if (TestNoir(*i)){
+        RendMemoire(i);
+        *i = Construit_Blanc();
+    }
+    else {
+        Negatif((*i)->fils[0]);
+        Negatif((*i)->fils[1]);
+        Negatif((*i)->fils[2]);
+        Negatif((*i)->fils[3]);
     }
 }
