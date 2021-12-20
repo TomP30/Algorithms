@@ -562,7 +562,7 @@ int main(int argc, char** argv)
     ajouteFile(3,&f);
     ajouteFile(4,&f);
     ajouteFile(5,&f);
-    printFile(f);
+    //printFile(f);
 
     return 0;
 }
